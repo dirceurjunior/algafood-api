@@ -1,11 +1,13 @@
 package com.drj.algafood.api.controller;
 
 import com.drj.algafood.api.model.CozinhasXmlWrapper;
+import com.drj.algafood.domain.exception.EntidadeEmUsoException;
+import com.drj.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.drj.algafood.domain.model.Cozinha;
 import com.drj.algafood.domain.repository.CozinhaRepository;
+import com.drj.algafood.domain.service.CadastroCozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +23,13 @@ public class CozinhaController {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
-//    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-//    public List<Cozinha> listar() {
-//        return cozinhaRepository.listar();
-//    }
+    @Autowired
+    private CadastroCozinhaService cadastroCozinhaService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-        return cozinhaRepository.salvar(cozinha);
+        return cadastroCozinhaService.salvar(cozinha);
     }
 
     @PutMapping("/{id}")
@@ -46,28 +46,19 @@ public class CozinhaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Cozinha> remover(@PathVariable Long id) {
         try {
-            Cozinha cozinha = cozinhaRepository.buscar(id);
-            if (cozinha != null) {
-                cozinhaRepository.remover(cozinha);
-                return ResponseEntity.noContent().build();
-            }
+            cadastroCozinhaService.excluir(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntidadeNaoEncontradaException e) {
             return ResponseEntity.notFound().build();
-        } catch (DataIntegrityViolationException e) {
+        } catch (EntidadeEmUsoException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Cozinha> listarJSON() {
-        //System.out.println("LISTAR JSON");
         return cozinhaRepository.listar();
     }
-
-//    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-//    public List<Cozinha> listarXML() {
-//        //System.out.println("LISTAR XML");
-//        return cozinhaRepository.listar();
-//    }
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public CozinhasXmlWrapper listarXml() {
@@ -87,5 +78,16 @@ public class CozinhaController {
 //        headers.add(HttpHeaders.LOCATION, "http://localhost:8080/cozinhas");
 //        return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
     }
+
+    //    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+//    public List<Cozinha> listar() {
+//        return cozinhaRepository.listar();
+//    }
+
+    //    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
+//    public List<Cozinha> listarXML() {
+//        //System.out.println("LISTAR XML");
+//        return cozinhaRepository.listar();
+//    }
 
 }
