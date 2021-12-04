@@ -28,5 +28,9 @@ public class Produto {
 
     private Long tamanho;
 
+    private Double valor;
+
+    private Integer quantidade;
+
 
 }
