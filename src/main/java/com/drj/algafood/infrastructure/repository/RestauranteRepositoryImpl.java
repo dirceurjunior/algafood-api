@@ -1,12 +1,13 @@
 package com.drj.algafood.infrastructure.repository;
 
-import com.drj.algafood.domain.model.*;
-import com.drj.algafood.domain.repository.*;
-import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.*;
+import com.drj.algafood.domain.model.Restaurante;
+import com.drj.algafood.domain.repository.RestauranteRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Component
 public class RestauranteRepositoryImpl implements RestauranteRepository {
@@ -16,8 +17,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
     @Override
     public List<Restaurante> listar() {
-        return manager.createQuery("from Restaurante", Restaurante.class)
-                .getResultList();
+        return manager.createQuery("from Restaurante", Restaurante.class).getResultList();
     }
 
     @Override
@@ -33,8 +33,8 @@ public class RestauranteRepositoryImpl implements RestauranteRepository {
 
     @Transactional
     @Override
-    public void remover(Restaurante restaurante) {
-        restaurante = buscar(restaurante.getId());
+    public void remover(Long id) {
+        Restaurante restaurante = buscar(id);
         manager.remove(restaurante);
     }
 

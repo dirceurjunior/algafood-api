@@ -37,7 +37,7 @@ public class CozinhaController {
         Cozinha cozinhaAtual = cozinhaRepository.buscar(id);
         if (cozinhaAtual != null) {
             BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-            cozinhaRepository.salvar(cozinhaAtual);
+            cadastroCozinhaService.salvar(cozinhaAtual);
             return ResponseEntity.ok(cozinhaAtual);
         }
         return ResponseEntity.notFound().build();
@@ -72,22 +72,6 @@ public class CozinhaController {
             return ResponseEntity.ok(cozinha);
         }
         return ResponseEntity.notFound().build();
-        // return ResponseEntity.status(HttpStatus.OK).body(cozinha);
-        // return ResponseEntity.ok(cozinha);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add(HttpHeaders.LOCATION, "http://localhost:8080/cozinhas");
-//        return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
     }
-
-    //    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-//    public List<Cozinha> listar() {
-//        return cozinhaRepository.listar();
-//    }
-
-    //    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
-//    public List<Cozinha> listarXML() {
-//        //System.out.println("LISTAR XML");
-//        return cozinhaRepository.listar();
-//    }
 
 }
